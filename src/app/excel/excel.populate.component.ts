@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import * as XLSXPopulate from "xlsx-populate/browser/xlsx-populate";
 import * as FileSaver from 'file-saver';
+import { ExcelDataService } from './excel.data.service';
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 
@@ -12,7 +13,7 @@ const EXCEL_EXTENSTION = '.xlsx';
   styleUrls: ["./excel.populate.component.css"]
 })
 export class ExcelPopulateComponent implements OnInit {
-  constructor() { }
+  constructor(private _excelDataService: ExcelDataService) { }
 
   ngOnInit() { }
 
@@ -23,14 +24,14 @@ export class ExcelPopulateComponent implements OnInit {
     XLSXPopulate.fromBlankAsync()
       .then(workbook => {
         // Modify the workbook.
-        workbook.sheet("Sheet1").cell("A1").value('summat');
+        // workbook.sheet("Sheet1").cell("A1").value('summat');
+        workbook.sheet("Sheet1").cell("A1").value(this._excelDataService.getData());
 
         // Write to file.
         return workbook.outputAsync()
           .then(blob => {
             console.log('completed exportAsExcelFile in', new Date().getTime() - start, 'ms');
-            // this.saveAsExcelFile(blob, excelFileName);
-            this.saveAsExcelFile(blob, 'wotever');
+            this.saveAsExcelFile(blob, 'xlsx-pop-export');
           });
       });
   }
